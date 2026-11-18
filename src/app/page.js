@@ -99,7 +99,7 @@ export default function VideoLibrary() {
                     </a>
                   </div>
                   <div className="p-3 text-center font-medium text-gray-700 truncate">
-                    <span className="text-blue-600 font-bold block text-center">{index + 1}</span>
+                    <span className="text-blue-600 font-bold block text-center">{videos.length - index}</span>
                     <span className="text-gray-500 w-full"> {video.title}</span>
                   </div>
                 </div>

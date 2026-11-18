@@ -29,18 +29,32 @@ async function getDatabase() {
 export async function GET() {
   try {
     const db = await getDatabase();
-    const videos = await db.collection("videos").find({}).toArray();
+    // .sort({ _id: -1 }) ব্যবহার করলে নতুনগুলো সবার আগে আসবে
+    const videos = await db.collection("videos").find({}).sort({ _id: -1 }).toArray();
     return NextResponse.json(videos, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch videos' }, { status: 500 });
   }
 }
 
-// POST: নতুন ভিডিও সেভ করার জন্য
+// POST: নতুন ভিডিও ডাটাবেজে সেভ করার জন্য (ডুপ্লিকেট চেক সহ)
 export async function POST(request) {
   try {
     const body = await request.json();
     const db = await getDatabase();
+
+    // চেক করা যে এই videoId বা url ইতিমধ্যে ডাটাবেজে আছে কি না
+    const existingVideo = await db.collection("videos").findOne({
+      $or: [{ videoId: body.videoId }, { url: body.url }]
+    });
+
+    if (existingVideo) {
+      return NextResponse.json(
+        { error: 'এই ভিডিওটি ইতিমধ্যে ডাটাবেজে সেভ করা রয়েছে!' }, 
+        { status: 400 }
+      );
+    }
+
     const result = await db.collection("videos").insertOne(body);
     return NextResponse.json({ success: true, result }, { status: 201 });
   } catch (error) {
