@@ -100,7 +100,8 @@ export default function VideoLibrary() {
                   </div>
                   <div className="p-3 text-center font-medium text-gray-700 truncate">
                     <span className="text-blue-600 font-bold block text-center">{videos.length - index}</span>
-                    <span className="text-gray-500 w-full"> {video.title}</span>
+                    <span>{video.videoId}</span><br/>
+                    <span className="text-gray-500 w-full">{video.title}</span>
                   </div>
                 </div>
 
